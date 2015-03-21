@@ -35,13 +35,20 @@ class Connection():
 		self.joinchan(self.channel)
 
 	def parse_message(self, ircmsg):
+		parsed_message = [None, None, None, None]
+
 		if len(ircmsg.split(":")) <= 3:
 			try:
 				message = ircmsg.split(":")[2]
+				channel = "#" + ircmsg.split(":")[1].split("#")[1]
 			except IndexError:
 				message = []
+				channel = ""
 		else:
 			message = ircmsg.split(":")[2:len(ircmsg.split(":"))]
+			channel = ""
+
+
 
 		# checking to see if the message is a list, which occurs if there were colons in the message #
 		if type(message) == type([1]):
@@ -50,10 +57,15 @@ class Connection():
 			sender = ircmsg.split(":")[1].split("!")[0]
 		except IndexError:
 			sender = None
-		if sender:
-			print("sender: " + sender)
-			print("message: " + message)
 
+
+		if sender:
+			parsed_message[0] = sender
+			parsed_message[1] = message
+			parsed_message[2] = channel
+			if "PRIVMSG" in ircmsg:
+				parsed_message[4] = "PRIVMSG"
+		return parsed_message
 
 	def receive(self):
 		ircmsg = self.ircsock.recv(2048)
@@ -64,9 +76,10 @@ class Connection():
 			nick = ircmsg.split("!")[0][1:]
 			channel = ircmsg.split(" PRIVMSG ")[-1].split(" :")[0]
 
-		if ircmsg.find("PING: ") != -1:
-			ping()
-		self.parse_message(ircmsg)
-		return ircmsg
+		if ircmsg.find("PING") != -1:
+			print("PINGING!!!")
+			self.ping()
+		msg = self.parse_message(ircmsg)
+		return msg
 
 

@@ -15,11 +15,12 @@ socky.connect()
 
 while 1:
 	message = socky.receive()
+	other_bot.respond(message)
 	# message2 = socky2.receive()
 
 
 
-	
+
 # def start():
 # 	if __name__ == "__main__":
 # 		t1 = threading.Thread(target = bot_2_thread, args = ())
