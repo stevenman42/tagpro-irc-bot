@@ -5,5 +5,5 @@ class Bot:
 
 	# Some basic variables used to configure the bot		
 	server = "irc.freenode.net" # Server
-	channel = "#sexywinners" # Channel
+	channel = "#tagprobots" # Channel
 	botnick = "dense_bot" # Your bots nick

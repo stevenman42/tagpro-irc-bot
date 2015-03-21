@@ -26,14 +26,15 @@ def sendmsg(msg):
 def joinchan(chan):
 	ircsock.send("JOIN " + chan + "\n")
 
-ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-ircsock.connect((server, 6667))
-ircsock.send("USER " + botnick + " " + botnick + " " + botnick + " :This is gonna be a chatbot.\n")
-ircsock.send("NICK " + botnick + "\n")
+def connect():
+	ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	ircsock.connect((server, 6667))
+	ircsock.send("USER " + botnick + " " + botnick + " " + botnick + " :This is gonna be a chatbot.\n")
+	ircsock.send("NICK " + botnick + "\n")
 
-joinchan(channel)
+	joinchan(channel)
 
-while 1:
+def receive():
 	ircmsg = ircsock.recv(2048)
 	ircmsg = ircmsg.strip("\n\r")
 	print(ircmsg)
@@ -45,4 +46,4 @@ while 1:
 	if ircmsg.find("PING: ") != -1:
 		ping()
 
-	print("hue")
+
