@@ -8,7 +8,8 @@ class Connection():
 		self.server = bot.server
 		self.channel = bot.channel
 		self.botnick = bot.botnick
-
+		self.port = bot.port
+		self.ircsock = None
 
 	def find(self, target, text):
 		if text.find(target) != -1:
@@ -17,20 +18,19 @@ class Connection():
 			return False
 
 	def ping(self):
-		ircsock.send("PONG :pingis\n")
+		self.ircsock.send("PONG :pingis\n")
 
 	def sendmsg(self, msg):
-		ircsock.send("PRIVMSG " + self.channel + " :" + msg + "\n")
+		self.ircsock.send("PRIVMSG " + self.channel + " :" + msg + "\n")
 
 	def joinchan(self, chan):
-		ircsock.send("JOIN " + chan + "\n")
+		self.ircsock.send("JOIN " + chan + "\n")
 
 	def connect(self):
-		global ircsock
-		ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		ircsock.connect((self.server, 6667))
-		ircsock.send("USER " + self.botnick + " " + self.botnick + " " + self.botnick + " :This is gonna be a chatbot.\n")
-		ircsock.send("NICK " + self.botnick + "\n")
+		self.ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		self.ircsock.connect((self.server, self.port))
+		self.ircsock.send("USER " + self.botnick + " " + self.botnick + " " + self.botnick + " :This is gonna be a chatbot.\n")
+		self.ircsock.send("NICK " + self.botnick + "\n")
 
 		self.joinchan(self.channel)
 
@@ -49,15 +49,17 @@ class Connection():
 		try:
 			sender = ircmsg.split(":")[1].split("!")[0]
 		except IndexError:
-			sender = "None"
-		print("sender: " + sender)
-		print("message: " + message)
+			sender = None
+		if sender:
+			print("sender: " + sender)
+			print("message: " + message)
 
 
 	def receive(self):
-		ircmsg = ircsock.recv(2048)
+		ircmsg = self.ircsock.recv(2048)
 		ircmsg = ircmsg.strip("\n\r")
-		print(ircmsg)
+		if len(ircmsg) > 1:
+			print(ircmsg)
 		if ircmsg.find(" PRIVMSG ") != -1:
 			nick = ircmsg.split("!")[0][1:]
 			channel = ircmsg.split(" PRIVMSG ")[-1].split(" :")[0]
