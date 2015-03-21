@@ -46,10 +46,12 @@ class Connection():
 		# checking to see if the message is a list, which occurs if there were colons in the message #
 		if type(message) == type([1]):
 			message = ":".join(message)
+		try:
+			sender = ircmsg.split(":")[1].split("!")[0]
+		except IndexError:
+			sender = "None"
 		print("sender: " + sender)
 		print("message: " + message)
-
-		sender = ircmsg.split(":")[1].split("!")[0]
 
 
 	def receive(self):
