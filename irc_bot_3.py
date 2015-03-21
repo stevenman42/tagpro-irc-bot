@@ -9,5 +9,4 @@ socky.connect()
 
 
 while 1:
-	socky.receive()
-	print("hue")
+	message = socky.receive()
