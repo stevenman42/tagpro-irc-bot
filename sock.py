@@ -26,13 +26,21 @@ class Connection():
 	def joinchan(self, chan):
 		self.ircsock.send("JOIN " + chan + "\n")
 
-	def connect(self):
+	def connect(self, **kwargs):
+
+		try:
+			if not channel:
+				channel = self.channel
+		except UnboundLocalError:
+			channel = self.channel
+
 		self.ircsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		self.ircsock.connect((self.server, self.port))
 		self.ircsock.send("USER " + self.botnick + " " + self.botnick + " " + self.botnick + " :This is gonna be a chatbot.\n")
 		self.ircsock.send("NICK " + self.botnick + "\n")
 
-		self.joinchan(self.channel)
+		print("joining: " + channel)
+		self.joinchan(channel)
 
 	def parse_message(self, ircmsg):
 		parsed_message = [None, None, None, None]
@@ -64,7 +72,7 @@ class Connection():
 			parsed_message[1] = message
 			parsed_message[2] = channel
 			if "PRIVMSG" in ircmsg:
-				parsed_message[4] = "PRIVMSG"
+				parsed_message[3] = "PRIVMSG"
 		return parsed_message
 
 	def receive(self):
@@ -77,7 +85,6 @@ class Connection():
 			channel = ircmsg.split(" PRIVMSG ")[-1].split(" :")[0]
 
 		if ircmsg.find("PING") != -1:
-			print("PINGING!!!")
 			self.ping()
 		msg = self.parse_message(ircmsg)
 		return msg

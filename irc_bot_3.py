@@ -15,7 +15,7 @@ socky.connect()
 
 while 1:
 	message = socky.receive()
-	other_bot.respond(message)
+	other_bot.respond(socky, message)
 	# message2 = socky2.receive()
 
 
