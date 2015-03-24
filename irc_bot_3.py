@@ -4,6 +4,10 @@ import threading
 
 other_bot = Bot("irc.freenode.net", "#tagprobots", "other_bot", 6667)
 second_bot = Bot("irc.freenode.net", "#tagprobots", "other_other_bot", 6666)
+danny_bot = Bot("hephaestos.me", "main", "steven_bot", 6668)
+
+danny_sock = Connection(danny_bot)
+danny_sock.connect()
 
 
 socky = Connection(other_bot)
@@ -14,8 +18,13 @@ socky.connect()
 
 
 while 1:
-	message = socky.receive()
-	other_bot.respond(socky, message)
+	# message = socky.receive()
+	# other_bot.respond(socky, message)
+
+	message = danny_sock.receive()
+	danny_bot.respond(danny_sock, message)
+
+
 	# message2 = socky2.receive()
 
 

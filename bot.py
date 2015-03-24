@@ -11,10 +11,30 @@ class Bot:
 		self.botnick = botnick
 		self.port = port
 
+		self.sender = ""
+		self.last_sender = ""
+		self.last_last_sender = ""
 
 
 	def respond(self, connection, parsed_message):
-		sender = parsed_message[0]
+
+		try:
+			self.last_last_sender = self.last_sender
+		except UnboundLocalError:
+			print("I guess I don't have a last_sender yet")
+			self.last_last_sender = ""
+
+		try:
+			self.last_sender = self.sender
+		except UnboundLocalError:
+			print("I guess I don't have a sender yet either")
+			self.last_sender = ""
+
+		print("last_sender: " + self.last_sender)
+		print("last_last_sender: " + self.last_last_sender)
+
+		self.sender = parsed_message[0]
+
 		message = parsed_message[1]
 		channel = parsed_message[2]
 		msgtype = parsed_message[3]
