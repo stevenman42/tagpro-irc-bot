@@ -2,16 +2,16 @@ from sock import Connection
 from bot import Bot
 import threading
 
-other_bot = Bot("irc.freenode.net", "#tagprobots", "other_bot", 6667)
+# other_bot = Bot("irc.freenode.net", "#tagprobots", "other_bot", 6667)
 second_bot = Bot("irc.freenode.net", "#tagprobots", "other_other_bot", 6666)
-danny_bot = Bot("hephaestos.me", "main", "steven_bot", 6668)
+danny_bot = Bot("hephaestos.me", "#main", "steven_bot", 6668)
 
 danny_sock = Connection(danny_bot)
 danny_sock.connect()
 
 
-socky = Connection(other_bot)
-socky.connect()
+# socky = Connection(other_bot)
+# socky.connect()
 
 # socky2 = Connection(second_bot)
 # socky2.connect()

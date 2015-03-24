@@ -86,7 +86,8 @@ class Connection():
 		ircmsg = self.ircsock.recv(2048)
 		ircmsg = ircmsg.strip("\n\r")
 		if len(ircmsg) > 1:
-			print(ircmsg)
+			# print(ircmsg)
+			pass
 		if ircmsg.find(" PRIVMSG ") != -1:
 			nick = ircmsg.split("!")[0][1:]
 			channel = ircmsg.split(" PRIVMSG ")[-1].split(" :")[0]

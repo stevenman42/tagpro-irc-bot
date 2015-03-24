@@ -15,6 +15,11 @@ class Bot:
 		self.last_sender = ""
 		self.last_last_sender = ""
 
+		self.afk_counter_is_on = False
+		self.afk_list = []
+
+
+
 
 	def respond(self, connection, parsed_message):
 
@@ -30,8 +35,8 @@ class Bot:
 			print("I guess I don't have a sender yet either")
 			self.last_sender = ""
 
-		print("last_sender: " + self.last_sender)
-		print("last_last_sender: " + self.last_last_sender)
+		# print("last_sender: " + self.last_sender)
+		# print("last_last_sender: " + self.last_last_sender)
 
 		self.sender = parsed_message[0]
 
@@ -39,14 +44,46 @@ class Bot:
 		channel = parsed_message[2]
 		msgtype = parsed_message[3]
 
+		try:
+			print (self.sender + ": " + message)
+		except TypeError:
+			message = ""
+
 		def send(message):
 			connection.sendmsg(message, channel)
 
-		if message == "hi " + self.botnick:
-			send("huehue")
+		def verify_nick(nick):
+			if nick in ['defense_bot', 'events']:
+				return True
+			return False
+
+
+
+		# === Settings === #
+
+		if message == "-counter: on" and verify_nick(self.botnick):
+			self.afk_counter_is_on = True
+
+		if message == "-counter: off" and verify_nick(self.botnick):
+			self.afk_counter_is_on = False
+
+
+		# === End Settings === #
+
+		for name in self.afk_list:
+			if name in message:
+				send(name + " is afk right now, " + sender)
+
+
+		if "hi " + self.botnick in message:
+			send("Hi " + self.sender + "!")
 
 		if message == "spam":
 			send("spam")
+
+		if message == "-afk" and self.afk_counter_is_on:
+			afk_list.append(sender)
+
 
 
 		if message == "-yiss":
