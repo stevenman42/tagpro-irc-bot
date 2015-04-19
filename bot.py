@@ -18,6 +18,29 @@ class Bot:
 		self.afk_counter_is_on = False
 		self.afk_list = []
 
+		self.response_dict = {"hi " + self.botnick: "hi " + self.last_sender,
+								"-yiss": self.yiss_response()
+								}
+
+	def yiss_response(self):
+
+		yiss = random.randint(0,6)
+		if yiss == 0:
+			return ("ᕕ(ᐛ)ᕗ aww yiss ᕕ(ᐛ)ᕗ")
+		elif yiss == 1:
+			return ("(ღ˘⌣˘ღ) aww yissss (ღ˘⌣˘ღ)")
+		elif yiss == 2:
+			return ( "✧ﾟ･:*ヽ(◕ヮ◕ヽ)  yiss  (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧")
+		elif yiss == 3:
+			return ("ヽ(‘ ∇‘ )ノ  yiss  ヽ(‘ ∇‘ )ノ")
+		elif yiss == 4:
+			return ("(ﾟヮﾟ)  yiss  (ﾟヮﾟ)")
+		elif yiss == 5:
+			return ("◕ ◡ ◕  yiss  ◕ ◡ ◕")
+		elif yiss == 6:
+			return ("ヽ(ﾟｰﾟ*ヽ) all hail yiss (ﾉ*ﾟｰﾟ)ﾉ")
+
+
 
 
 
@@ -38,14 +61,14 @@ class Bot:
 		# print("last_sender: " + self.last_sender)
 		# print("last_last_sender: " + self.last_last_sender)
 
-		self.sender = parsed_message[0]
+		sender = parsed_message[0]
 
 		message = parsed_message[1]
 		channel = parsed_message[2]
 		msgtype = parsed_message[3]
 
 		try:
-			print (self.sender + ": " + message)
+			print (sender + ": " + message)
 		except TypeError:
 			message = ""
 
@@ -61,10 +84,11 @@ class Bot:
 
 		# === Settings === #
 
-		if message == "-counter: on" and verify_nick(self.botnick):
+		if message == "-counter: on" and verify_nick(sender):
 			self.afk_counter_is_on = True
+			print("turned the counter on")
 
-		if message == "-counter: off" and verify_nick(self.botnick):
+		if message == "-counter: off" and verify_nick(sender):
 			self.afk_counter_is_on = False
 
 
@@ -73,35 +97,22 @@ class Bot:
 		for name in self.afk_list:
 			if name in message:
 				send(name + " is afk right now, " + sender)
+			if name == sender:
+				print("I removed " + name)
+				self.afk_list.remove(name)
+				send("Welcome back, " + sender)
 
-
-		if "hi " + self.botnick in message:
-			send("Hi " + self.sender + "!")
-
-		if message == "spam":
-			send("spam")
 
 		if message == "-afk" and self.afk_counter_is_on:
-			afk_list.append(sender)
+			self.afk_list.append(sender)
+			print("I just added " + sender)
+
+		if message in self.response_dict.keys():
+			send(self.response_dict[message])
 
 
 
-		if message == "-yiss":
-			yiss = random.randint(0,6)
-			if yiss == 0:
-				send("ᕕ(ᐛ)ᕗ aww yiss ᕕ(ᐛ)ᕗ")
-			elif yiss == 1:
-				send("(ღ˘⌣˘ღ) aww yissss (ღ˘⌣˘ღ)")
-			elif yiss == 2:
-				send( "✧ﾟ･:*ヽ(◕ヮ◕ヽ)  yiss  (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧")
-			elif yiss == 3:
-				send("ヽ(‘ ∇‘ )ノ  yiss  ヽ(‘ ∇‘ )ノ")
-			elif yiss == 4:
-				send("(ﾟヮﾟ)  yiss  (ﾟヮﾟ)")
-			elif yiss == 5:
-				send("◕ ◡ ◕  yiss  ◕ ◡ ◕")
-			elif yiss == 6:
-				send("ヽ(ﾟｰﾟ*ヽ) all hail yiss (ﾉ*ﾟｰﾟ)ﾉ")
+
 
 		elif "-join " in message:
 			channel_to_join = message.replace("-join ", "")
